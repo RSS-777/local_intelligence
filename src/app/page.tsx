@@ -1,95 +1,130 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useState, useRef, useEffect } from 'react';
+import styles from './page.module.css'
 
-export default function Home() {
+const Home = () => {
+  const [topic, setTopic] = useState<string>('')
+  const [aiResponses, setAiResponses] = useState<string[]>([])
+  const [model, setModel] = useState<string>('llama3.2')
+  const [waiting, setWaiting] = useState<boolean>(false)
+  const [history, setHistory] = useState<{ question: string, response: string[] }[]>([])
+  const textAreaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    autoResize();
+  }, [topic]);
+
+  useEffect(() => {
+    if (aiResponses.length > 0 && topic) {
+      setHistory(prev => [...prev, { question: topic, response: aiResponses }]);
+      setTopic('');
+    }
+  }, [aiResponses]);
+
+  const handleTopicChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTopic(event.target.value);
+  };
+
+  const autoResize = () => {
+    if (textAreaRef.current) {
+      textAreaRef.current.style.height = '26px'
+      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
+    }
+  };
+
+  const handleAiResponses = async () => {
+    setWaiting(true)
+    const response = await fetch('/api/interview', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ topic, model }),
+    });
+
+    if (response.ok) {
+      setWaiting(false)
+      const data = await response.json();
+
+      if (data.questions) {
+        setAiResponses(data.questions);
+      } else {
+        console.error('No questions in response');
+      }
+    } else {
+      console.error('Failed to fetch questions');
+    }
+  };
+
+  const handleClearHistory = () => {
+    setHistory([])
+  }
+
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+      <h1 className={styles.title}>Local Intelligence</h1>
+      <div className={styles.model}>
+        <label htmlFor="model" className={styles['model__label']}>Model:</label>
+        <select
+          name="model"
+          id="model"
+          className={styles['model__select']}
+          onChange={(e) => setModel(e.target.value)}
+        >
+          <option value="llama3.2">Llama v3.2</option>
+          <option value="mistral">Mistral v.(latest)</option>
+        </select>
+      </div>
+      <p className={`${waiting ? styles['ai-responses-loading'] : styles['ai-responses-listening']} ${styles['ai-responses']}`}>
+        <span>{waiting ? 'Loading...' : 'Listening'}</span>
+      </p>
+      <div className={styles['container-chat']}>
+        {history.length > 0 ? (
+          <>
+            {history.map((elem, index) => (
+              <div className={styles.history} key={index}>
+                <div className={styles['history__block-question']}>
+                  <div className={styles['history__question']}>
+                    <span>Я:</span>
+                    <br /><p className={styles['history__text']}>{elem.question}</p>
+                  </div>
+                </div>
+                <div className={styles['history__responses']}>
+                  <span >AI:</span>
+                  <ul className={styles['history__list']}>
+                    {elem.response.map((res, idx) => (
+                      <li key={idx} className={styles['ai-responses__items']}>{res}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          null
+        )}
+      </div>
+      <div className={styles.question}>
+        <button
+          onClick={handleClearHistory}
+          className={styles['question__button']}
+        > Clear</button>
+        <textarea
+          name="question"
+          value={topic}
+          onChange={handleTopicChange}
+          className={styles['question__textarea']}
+          placeholder="Enter your question..."
+          ref={textAreaRef}
         />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <button
+          onClick={handleAiResponses}
+          disabled={topic == ''}
+          className={styles['question__button']}
+        > Go</button>
+      </div>
     </div>
   );
-}
+};
+
+export default Home;
