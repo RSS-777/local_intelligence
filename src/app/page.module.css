@@ -9,7 +9,10 @@
 }
 
 .page {
-    background-color: rgb(32, 92, 123);
+    background-image: url('/ai_fone.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     min-height: 100vh;
     padding: 10px;
     position: relative;
@@ -37,8 +40,9 @@
     border: none;
     border-radius: 5px;
     text-align: center;
-    box-shadow: 0.5px 0.5px 3px 0 black;
+    box-shadow: 1px 1px 8px 0 rgb(153, 231, 229);
     cursor: pointer;
+    background-color: bisque; 
 }
 
 .container-chat {
@@ -65,26 +69,37 @@
     padding: 5px 5px 8px 5px;
     resize: none;
     overflow: hidden;
-    background-color: bisque;
-    box-shadow: 2px 2px 5px 0 black;
+    background-color: rgb(200, 244, 251);
 }
 
 .question__button {
-    border: 1px solid green;
+    border: 1px solid blue;
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    box-shadow: 2px 2px 5px 0 rgb(0, 0, 0);
+    box-shadow: 0 0 8px 0 rgb(153, 231, 229);
     cursor: pointer;
-    color: green;
-    background-color: rgb(192, 227, 248);
+    color: blue;
+    background-color: rgb(200, 244, 251);
     font-size: 14px;
 }
 
 .question__button:hover {
-    box-shadow: 1px 1px 3px 0 rgb(0, 0, 0);
-    border: 1px solid coral;
-    color: coral;
+    box-shadow: 0 0 3px 0 transparent;
+    border: 1px solid red;
+    color: red;
+}
+
+.question__button:disabled {
+    color: gray;
+    border: 1px solid rgb(68, 68, 68);
+}
+
+.question__button:disabled:hover {
+    color: gray;
+    border: 1px solid rgb(68, 68, 68);
+    box-shadow: 0 0 8px 0 rgb(153, 231, 229);
+    cursor: default;
 }
 
 .ai-responses {
@@ -97,8 +112,6 @@
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    background-color: bisque;
-    box-shadow: 2px 2px 5px 0 black;
     z-index: 1;
 }
 
@@ -176,7 +189,7 @@
     width: 50%;
     border-radius: 10px;
     padding: 5px;
-    background-color: rgb(240, 193, 134);
+    background-color: #FFE4C4;
     box-shadow: 2px 2px 5px 0 black;
 }
 

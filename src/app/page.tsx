@@ -5,7 +5,7 @@ import styles from './page.module.css'
 const Home = () => {
   const [topic, setTopic] = useState<string>('')
   const [aiResponses, setAiResponses] = useState<string[]>([])
-  const [model, setModel] = useState<string>('llama3.2')
+  const [model, setModel] = useState<string>('llama3')
   const [waiting, setWaiting] = useState<boolean>(false)
   const [history, setHistory] = useState<{ question: string, response: string[] }[]>([])
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
@@ -71,8 +71,10 @@ const Home = () => {
           className={styles['model__select']}
           onChange={(e) => setModel(e.target.value)}
         >
-          <option value="llama3.2">Llama v3.2</option>
-          <option value="mistral">Mistral v.(latest)</option>
+          <option value="llama3">Llama v3.3 8B</option>
+          <option value="mistral">Mistral v(latest)</option>
+          <option value="openchat">Openchat</option>
+          <option value="deepseek-coder:6.7b">Deepseek-coder:6.7b</option>
         </select>
       </div>
       <p className={`${waiting ? styles['ai-responses-loading'] : styles['ai-responses-listening']} ${styles['ai-responses']}`}>
@@ -119,7 +121,7 @@ const Home = () => {
         />
         <button
           onClick={handleAiResponses}
-          disabled={topic == ''}
+          disabled={topic == '' || waiting}
           className={styles['question__button']}
         > Go</button>
       </div>
