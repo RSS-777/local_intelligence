@@ -58,54 +58,57 @@ const Home = () => {
 
   const handleClearHistory = () => {
     setHistory([])
+    setTopic('')
   }
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Local Intelligence</h1>
-      <div className={styles.model}>
-        <label htmlFor="model" className={styles['model__label']}>Model:</label>
-        <select
-          name="model"
-          id="model"
-          className={styles['model__select']}
-          onChange={(e) => setModel(e.target.value)}
-        >
-          <option value="llama3">Llama v3.3 8B</option>
-          <option value="mistral">Mistral v(latest)</option>
-          <option value="openchat">Openchat</option>
-          <option value="deepseek-coder:6.7b">Deepseek-coder:6.7b</option>
-        </select>
-      </div>
-      <p className={`${waiting ? styles['ai-responses-loading'] : styles['ai-responses-listening']} ${styles['ai-responses']}`}>
-        <span>{waiting ? 'Loading...' : 'Listening'}</span>
-      </p>
-      <div className={styles['container-chat']}>
-        {history.length > 0 ? (
-          <>
-            {history.map((elem, index) => (
-              <div className={styles.history} key={index}>
-                <div className={styles['history__block-question']}>
-                  <div className={styles['history__question']}>
-                    <span>Я:</span>
-                    <br /><p className={styles['history__text']}>{elem.question}</p>
+      <>
+        <h1 className={styles.title}>Local Intelligence</h1>
+        <div className={styles.model}>
+          <label htmlFor="model" className={styles['model__label']}>Model:</label>
+          <select
+            name="model"
+            id="model"
+            className={styles['model__select']}
+            onChange={(e) => setModel(e.target.value)}
+          >
+            <option value="llama3">Llama v3.3 8B</option>
+            <option value="mistral">Mistral v(latest)</option>
+            <option value="openchat">Openchat</option>
+            <option value="deepseek-coder:6.7b">Deepseek-coder:6.7b</option>
+          </select>
+        </div>
+        <p className={`${waiting ? styles['ai-responses-loading'] : styles['ai-responses-listening']} ${styles['ai-responses']}`}>
+          <span>{waiting ? 'Loading...' : 'Listening'}</span>
+        </p>
+        <div className={styles['container-chat']}>
+          {history.length > 0 ? (
+            <>
+              {history.map((elem, index) => (
+                <div className={styles.history} key={index}>
+                  <div className={styles['history__block-question']}>
+                    <div className={styles['history__question']}>
+                      <span>Я:</span>
+                      <br /><p className={styles['history__text']}>{elem.question}</p>
+                    </div>
+                  </div>
+                  <div className={styles['history__responses']}>
+                    <span >AI:</span>
+                    <ul className={styles['history__list']}>
+                      {elem.response.map((res, idx) => (
+                        <li key={idx} className={styles['ai-responses__items']}>{res}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-                <div className={styles['history__responses']}>
-                  <span >AI:</span>
-                  <ul className={styles['history__list']}>
-                    {elem.response.map((res, idx) => (
-                      <li key={idx} className={styles['ai-responses__items']}>{res}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </>
-        ) : (
-          null
-        )}
-      </div>
+              ))}
+            </>
+          ) : (
+            null
+          )}
+        </div>
+      </>
       <div className={styles.question}>
         <button
           onClick={handleClearHistory}
@@ -118,6 +121,7 @@ const Home = () => {
           className={styles['question__textarea']}
           placeholder="Enter your question..."
           ref={textAreaRef}
+          disabled={waiting}
         />
         <button
           onClick={handleAiResponses}
@@ -130,3 +134,4 @@ const Home = () => {
 };
 
 export default Home;
+
