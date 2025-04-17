@@ -215,3 +215,9 @@
     padding: 5px 10px;
     list-style: none;
 }
+
+@media (max-width: 580px) {
+    .history__question {
+        width: 100%;
+    }
+}
